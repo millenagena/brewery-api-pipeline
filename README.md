@@ -20,8 +20,6 @@ Como o repositório é público, disponibilizei apenas os notebooks Databricks e
 
 ## Criação dos Recursos na Nuvem
 
-Os principais recursos criados foram:
-
 Para sustentar a pipeline, foram criados os seguintes recursos na Azure:
 
 1. **Grupo de recursos:** `breweries-case`
