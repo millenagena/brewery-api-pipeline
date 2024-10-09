@@ -42,7 +42,7 @@ Apenas a pasta **bronze** foi criada no Data Lake, pois as camadas **silver** e 
 
 Duas abordagens foram consideradas para a ingestão de dados:
 
-1. Utilizar o Azure Data Factory (ADF) com um conector HTTP para copiar os dados da API e salvá-los diretamente na camada bronze. Isso envolveria um mecanismo de retries em caso de falhas.
+1. Utilizar o Azure Data Factory (ADF) com um conector HTTP e uma atividade de cópia para copiar os dados da API e salvá-los diretamente na camada bronze. Isso envolveria um mecanismo de retries em caso de falhas utilizando uma atividade do tipo **Until**.
 2. Implementar um código Python no Databricks para fazer a extração e ingestão dos dados, com tratamento de erros para lidar com possíveis falhas.
 
 Optei pela segunda abordagem devido à necessidade de paginar as requisições na API, o que seria mais eficiente e flexível utilizando o código Python.
@@ -62,11 +62,11 @@ O notebook [SilverBreweries](https://github.com/millenagena/brewery-api-pipeline
 - Filtragem para remover linhas com estados nulos, já que os dados serão particionados por estado.
 - Adição de colunas de controle de **data** e **horário** de carregamento.
 
-A decisão de particionar os dados pela coluna **state** foi tomada devido à sua cardinalidade moderada, proporcionando um bom equilíbrio entre granularidade e desempenho.
+A decisão de particionar os dados pela coluna **state** foi tomada devido à sua cardinalidade moderada quando comparada com as colunas de cidade e país, proporcionando um bom equilíbrio entre granularidade e desempenho.
 
 ### 3 - Agregação e Criação da Camada Gold
 
-O notebook [GoldBreweries](https://github.com/millenagena/brewery-api-pipeline/blob/main/databricks/gold/GoldBreweries.py) realiza a agregação dos dados, calculando a quantidade de cervejarias por tipo e estado. Para otimizar o desempenho das consultas futuras, utilizou-se o recurso de **liquid Clustering** para otimização dessa tabela visando futuras consultas com melhor desempenho.
+O notebook [GoldBreweries](https://github.com/millenagena/brewery-api-pipeline/blob/main/databricks/gold/GoldBreweries.py) realiza a agregação dos dados, calculando a quantidade de cervejarias por tipo e estado. Para otimizar o desempenho das consultas futuras, utilizou-se o recurso de **Liquid Clustering**. Este método de otimização, recomendado pela Databricks para tabelas delta, reorganiza os dados de forma dinâmica e eficiente, melhorando significativamente a performance das consultas ao reduzir a fragmentação dos dados. Assim, consultas complexas tornam-se mais rápidas e eficientes.
 
 ### Unity Catalog
 
@@ -77,11 +77,11 @@ As tabelas silver e gold foram gerenciadas pelo **Unity Catalog**, utilizando do
 Optei pelo Unity Catalog pelos seguintes motivos:
 
 1. **Linhagem de dados**: Fornece rastreabilidade completa desde a origem até as transformações e análises finais.
-2. **Segurança centralizada**: Permite controle de acesso robusto e detalhado para as tabelas, essencial em um ambiente colaborativo.
+2. **Segurança centralizada**: Permite controle de acesso robusto e detalhado para as tabelas, o que é essencial em um cenário de ambiente colaborativo.
 3. **Gerenciamento centralizado**: Simplifica o gerenciamento do data lake e garante consistência nas permissões e políticas de segurança.
 4. **Controle de auditoria**: Oferece visibilidade das operações de leitura e escrita no data lake, facilitando auditorias e revisões de conformidade.
 
-A camada **bronze** foi mantida no Data Lake original, pois, conforme as boas práticas do Databricks, o uso de Volumes no Unity Catalog é recomendado apenas para arquivos não tabulares.
+A camada **bronze** foi mantida no Data Lake original, pois conforme as boas práticas do Databricks, o uso de Volumes no Unity Catalog é recomendado apenas para arquivos não tabulares.
 
 ## Pipeline - Azure Data Factory (ADF)
 
