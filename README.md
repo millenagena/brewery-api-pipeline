@@ -4,7 +4,7 @@
 O objetivo deste projeto é consumir dados de uma API, transformá-los e armazená-los em um **data lake** utilizando a arquitetura **medallion**, composta por três camadas: **Bronze** (dados brutos), **Silver** (dados curados) e **Gold** (dados analíticos agregados). 
 
 ## Descrição Geral do Projeto
-Este projeto utiliza a API pública [Open Brewery DB](https://api.openbrewerydb.org/breweries), que disponibiliza informações sobre cervejarias no mundo todo. O foco é criar um pipeline que ingira essas informações, organize-as e as armazene de forma estruturada no data lake, de acordo com a arquitetura de três camadas:
+Este projeto utiliza a API pública [Open Brewery DB](https://api.openbrewerydb.org/breweries), que disponibiliza informações sobre cervejarias no mundo todo. O foco é criar um pipeline que faça a ingestão dessas informações, organize-as e as armazene de forma estruturada no data lake, de acordo com a arquitetura de três camadas:
 
 1. **Camada Bronze**: Armazenamento dos dados em sua forma original, sem transformações.
 2. **Camada Silver**: Limpeza e transformação dos dados, convertendo-os para um formato colunar (como Parquet ou Delta) e particionando-os por estado.
