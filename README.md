@@ -16,6 +16,8 @@ A arquitetura construída consiste em:
 
 ![img1](https://i.imgur.com/QILUsJ0.png)
 
+Como o repositório é público, disponibilizei apenas os notebooks Databricks e incluí instruções para a criação dos recursos na nuvem.
+
 ## Criação dos Recursos na Nuvem
 
 Os principais recursos criados foram:
@@ -127,3 +129,9 @@ Foi configurada uma **trigger baseada em horário**, com execução diária às 
 ![img4](https://i.imgur.com/QOmoBh9.png)
 
 Esta configuração atende a um cenário onde a API tem novos dados diariamente, mas para uma estratégia de execução mais precisa seria necessário um entendimento mais aprofundado sobre a frequência de atualização da API.
+
+## Considerações Finais
+
+Para monitoramento e alertas, uma abordagem interessante seria implementar uma tabela de logs onde os erros e as execuções dos notebooks no Databricks fossem armazenados. Esses logs poderiam ser capturados via atividades de **stored procedures** no ADF, garantindo rastreamento de falhas e execuções bem-sucedidas. Além disso, atividades do tipo **Web** no ADF poderiam enviar notificações para canais como Teams, Slack, ou E-mail sempre que o pipeline falhar, permitindo respostas rápidas aos problemas.
+
+Outro ponto importante seria a implementação de um processo de CI/CD (Integração Contínua e Entrega Contínua), o que garantiria a consistência e a versionamento das alterações no pipeline. Isso possibilitaria testes automatizados sempre que novos códigos ou configurações fossem implementados, além de reduzir o tempo para detecção de problemas. Adotar boas práticas de testes, como a validação de schema e simulações de falha no pipeline, também contribuiria para a robustez do projeto e reduziria o risco de erros em produção.
